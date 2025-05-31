@@ -23,7 +23,7 @@ RUN pip install --no-cache-dir -r requirements.txt
 COPY . /app/
 
 # Expose port
-EXPOSE 8000
+EXPOSE 8103
 
 # Run the application
-CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]
+CMD ["gunicorn", "fredy.wsgi:application", "--bind", "0.0.0.0:8103"]

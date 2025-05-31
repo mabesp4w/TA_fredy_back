@@ -1,0 +1,45 @@
+services:
+  web:
+    build: .
+    command: python manage.py runserver 0.0.0.0:8000
+    volumes:
+      - .:/app
+    ports:
+      - "8000:8000"
+    depends_on:
+      db:
+        condition: service_healthy    # Tunggu sampai db healthy
+    environment:
+      - DEBUG=1
+
+  db:
+    image: mysql:8.0
+    volumes:
+      - mysql_data:/var/lib/mysql
+    environment:
+      - MYSQL_DATABASE=fredy
+      - MYSQL_ROOT_PASSWORD=fredypwd
+      - MYSQL_USER=django_user
+      - MYSQL_PASSWORD=fredypwd
+    ports:
+      - "3309:3306"  # Host:Container - ini yang benar
+    command: --default-authentication-plugin=mysql_native_password
+    healthcheck: # Tambahkan health check
+      test: [ "CMD", "mysqladmin", "ping", "-h", "localhost" ]
+      timeout: 20s
+      retries: 10
+
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    container_name: phpmyadmin
+    environment:
+      - PMA_HOST=db           # Nama service DB di docker-compose
+      - PMA_USER=django_user  # Username MySQL
+      - PMA_PASSWORD=fredypwd # Password MySQL
+    ports:
+      - "8080:80"  # Host:Container - akses phpMyAdmin pada port 8080
+    depends_on:
+      - db
+
+volumes:
+  mysql_data:

@@ -16,6 +16,7 @@ services:
     volumes:
       - mysql_data:/var/lib/mysql
     environment:
+      - MYSQL_ROOT_HOST=%
       - MYSQL_DATABASE=fredy
       - MYSQL_ROOT_PASSWORD=fredypwd
       - MYSQL_USER=django_user

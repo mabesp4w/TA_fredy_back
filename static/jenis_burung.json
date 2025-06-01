@@ -1,79 +1,90 @@
 [
     {
         "id": 1,
-        "latin_nm": "Aegithina_tiphia",
-        "nm_burung": "Cicik Tiphia",
+        "scientific_nm": "Aegithina_tiphia",
+        "bird_nm": "Cicik Tiphia",
         "description": "Burung kecil yang memiliki warna cerah, dengan suara kicauan yang merdu. Banyak ditemukan di daerah tropis.",
-        "habitat": "Hutan tropis lebat dan daerah pegunungan rendah di Asia Tenggara."
+        "habitat": "Hutan tropis lebat dan daerah pegunungan rendah di Asia Tenggara.",
+        "family": "Aegithinidae"
     },
     {
         "id": 2,
-        "latin_nm": "Aplonis_panayensis",
-        "nm_burung": "Gagak Kecil Panay",
+        "scientific_nm": "Aplonis_panayensis",
+        "bird_nm": "Gagak Kecil Panay",
         "description": "Burung berukuran kecil dengan warna hitam mengkilap. Makanan utamanya adalah buah dan serangga.",
-        "habitat": "Hutan dataran rendah dan pegunungan di Filipina."
+        "habitat": "Hutan dataran rendah dan pegunungan di Filipina.",
+        "family": "Sturnidae"
     },
     {
         "id": 3,
-        "latin_nm": "Collocalia_linchi",
-        "nm_burung": "Walet Linchi",
+        "scientific_nm": "Collocalia_linchi",
+        "bird_nm": "Walet Linchi",
         "description": "Burung kecil berwarna gelap, terkenal dengan kemampuan terbang cepat dan membuat sarang di gua.",
-        "habitat": "Gua-gua di daerah Asia Tenggara."
+        "habitat": "Gua-gua di daerah Asia Tenggara.",
+        "family": "Apodidae"
     },
     {
         "id": 4,
-        "latin_nm": "Dicaeum_trochileum",
-        "nm_burung": "Cucuk Merah",
+        "scientific_nm": "Dicaeum_trochileum",
+        "bird_nm": "Cucuk Merah",
         "description": "Burung kecil dengan tubuh yang berwarna cerah, sering terlihat terbang cepat dan aktif mencari makan.",
-        "habitat": "Hutan tropis dan semak belukar di Asia Tenggara."
+        "habitat": "Hutan tropis dan semak belukar di Asia Tenggara.",
+        "family": "Dicaeidae"
     },
     {
         "id": 5,
-        "latin_nm": "Geopelia_striata",
-        "nm_burung": "Merpati Garis",
+        "scientific_nm": "Geopelia_striata",
+        "bird_nm": "Merpati Garis",
         "description": "Merpati kecil dengan warna abu-abu dan garis-garis hitam di tubuhnya. Dikenal tenang dan sering ditemukan di kawasan terbuka.",
-        "habitat": "Padang rumput terbuka, hutan terbuka, dan perkotaan."
+        "habitat": "Padang rumput terbuka, hutan terbuka, dan perkotaan.",
+        "family": "Columbidae"
     },
     {
         "id": 6,
-        "latin_nm": "Lonchura_leucogastroides",
-        "nm_burung": "Finch Leucogastroides",
+        "scientific_nm": "Lonchura_leucogastroides",
+        "bird_nm": "Finch Leucogastroides",
         "description": "Burung kecil dengan warna tubuh coklat kekuningan dan perut putih. Hidup di daerah yang agak kering.",
-        "habitat": "Padang rumput, semak belukar, dan daerah pertanian."
+        "habitat": "Padang rumput, semak belukar, dan daerah pertanian.",
+        "family": "Estrildidae"
     },
     {
         "id": 7,
-        "latin_nm": "Orthotomus_sutorius",
-        "nm_burung": "Burung Penjahit",
+        "scientific_nm": "Orthotomus_sutorius",
+        "bird_nm": "Burung Penjahit",
         "description": "Burung kecil dengan kebiasaan membuat sarang yang unik dan menyelipkan bahan sarang di batang pohon.",
-        "habitat": "Hutan tropis dan perkebunan di Asia Tenggara."
+        "habitat": "Hutan tropis dan perkebunan di Asia Tenggara.",
+        "family": "Ploceidae"
     },
     {
         "id": 8,
-        "latin_nm": "Paradisaea_apoda",
-        "nm_burung": "Cenderawasih",
+        "scientific_nm": "Paradisaea_apoda",
+        "bird_nm": "Cenderawasih",
         "description": "Burung yang terkenal dengan bulu ekor panjang dan warna-warna cerah, serta tarian khas selama ritual perkawinan.",
-        "habitat": "Hutan hujan tropis di Papua dan New Guinea."
+        "habitat": "Hutan hujan tropis di Papua dan New Guinea.",
+        "family": "Paradisaeidae"
     },
     {
         "id": 9,
-        "latin_nm": "Passer_montanus",
-        "nm_burung": "Gelandangan Emas",
+        "scientific_nm": "Passer_montanus",
+        "bird_nm": "Gelandangan Emas",
         "description": "Burung kecil dengan warna coklat dan abu-abu. Sering ditemukan di dekat pemukiman manusia.",
-        "habitat": "Pekarangan, ladang pertanian, dan daerah pemukiman."
+        "habitat": "Pekarangan, ladang pertanian, dan daerah pemukiman.",
+        "family": "Passeridae"
     },
     {
         "id": 10,
-        "latin_nm": "Prinia_familiaris",
-        "nm_burung": "Prinia Umum",
+        "scientific_nm": "Prinia_familiaris",
+        "bird_nm": "Prinia Umum",
         "description": "Burung kecil yang sering terlihat melompat-lompat di tanah atau semak belukar.",
-        "habitat": "Semak belukar, perkebunan, dan area terbuka."
+        "habitat": "Semak belukar, perkebunan, dan area terbuka.",
+        "family": "Cisticolidae"
     },
     {
         "id": 11,
-        "latin_nm": "Pycnonotus_aurigaster",
-        "nm_burung": "Serayu",
+        "scientific_nm": "Pycnonotus_aurigaster",
+        "bird_nm": "Serayu",
         "description": "Burung pemakan buah dan serangga dengan warna tubuh yang cerah. Dikenal dengan kicauannya yang merdu.",
-        "habitat": "Hutan tropis dan daerah semi terbuka di Asia Tenggara."
+        "habitat": "Hutan tropis dan daerah semi terbuka di Asia Tenggara.",
+        "family": "Pycnonotidae"
     }
 ]

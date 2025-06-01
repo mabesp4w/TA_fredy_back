@@ -23,6 +23,7 @@ urlpatterns = [
        path('admin/', admin.site.urls),
         path('crud/', include('crud.urls')),
         path('api/', include('api.urls')),
+        path('auth/', include('authentication.urls')),
 ]
 
 # Add media URLs for development

@@ -1,7 +1,5 @@
 # authentication/serializers.py
 from django.contrib.auth import get_user_model
-from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
-from rest_framework_simplejwt.views import TokenObtainPairView
 from rest_framework import serializers
 
 
@@ -43,7 +41,7 @@ class UserRegistrationSerializer(serializers.ModelSerializer):
         return user
 
 
-class EmailTokenObtainPairSerializer(TokenObtainPairSerializer):
+class EmailTokenObtainPairSerializer():
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.fields['email'] = serializers.EmailField()
@@ -56,7 +54,6 @@ class EmailTokenObtainPairSerializer(TokenObtainPairSerializer):
         # Cari user berdasarkan email
         try:
             user = User.objects.get(email=email)
-            # Tambahkan username ke attributes untuk diproses TokenObtainPairSerializer
             attrs['username'] = user.username
 
             # Coba validasi dengan token serializer

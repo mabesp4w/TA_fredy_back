@@ -1,5 +1,6 @@
 from datetime import timedelta
 
+from django.conf import settings
 from django.contrib.auth import authenticate
 from django.utils import timezone
 from oauth2_provider.contrib.rest_framework import TokenHasScope
@@ -11,9 +12,6 @@ from rest_framework import status
 from oauth2_provider.models import AccessToken, RefreshToken
 
 from oauth2_provider.models import Application
-
-from authentication.serializers import UserRegistrationSerializer
-from thobias import settings
 
 
 class AdminOnlyView(APIView):

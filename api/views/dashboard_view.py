@@ -37,9 +37,6 @@ class DashboardViewSet(viewsets.ViewSet):
         recent_images = Image.objects.filter(created_at__gte=thirty_days_ago).count()
         recent_sounds = Sound.objects.filter(created_at__gte=thirty_days_ago).count()
 
-        # Hitung sound preprocessing status
-        preprocessed_sounds = Sound.objects.filter(preprocessing=True).count()
-        raw_sounds = Sound.objects.filter(preprocessing=False).count()
 
         stats_data = {
             'totalFamilies': total_families,
@@ -50,8 +47,6 @@ class DashboardViewSet(viewsets.ViewSet):
             'recentBirds': recent_birds,
             'recentImages': recent_images,
             'recentSounds': recent_sounds,
-            'preprocessedSounds': preprocessed_sounds,
-            'rawSounds': raw_sounds,
         }
 
         serializer = DashboardStatsSerializer(stats_data)
@@ -263,12 +258,9 @@ class SoundViewSet(viewsets.ModelViewSet):
     def get_queryset(self):
         queryset = Sound.objects.select_related('bird').order_by('-created_at')
         bird_id = self.request.query_params.get('bird', None)
-        preprocessing = self.request.query_params.get('preprocessing', None)
 
         if bird_id:
             queryset = queryset.filter(bird_id=bird_id)
-        if preprocessing is not None:
-            queryset = queryset.filter(preprocessing=preprocessing.lower() == 'true')
 
         return queryset
 
@@ -280,15 +272,5 @@ class SoundViewSet(viewsets.ModelViewSet):
             'recent': Sound.objects.filter(
                 created_at__gte=timezone.now() - timedelta(days=30)
             ).count(),
-            'preprocessed': Sound.objects.filter(preprocessing=True).count(),
-            'raw': Sound.objects.filter(preprocessing=False).count()
         }
         return Response(stats)
-
-    @action(detail=True, methods=['post'])
-    def toggle_preprocessing(self, request, pk=None):
-        """Toggle preprocessing status"""
-        sound = self.get_object()
-        sound.preprocessing = not sound.preprocessing
-        sound.save()
-        return Response({'preprocessing': sound.preprocessing})

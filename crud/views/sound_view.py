@@ -12,9 +12,9 @@ class SoundViewSet(viewsets.ModelViewSet):
     serializer_class = SoundSerializer
     pagination_class = LaravelStylePagination
     filter_backends = [DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter]
-    filterset_fields = ['bird', 'preprocessing', 'recording_date']
+    filterset_fields = ['bird', ]
     search_fields = ['bird__bird_nm', 'location', 'description']
-    ordering_fields = ['recording_date', 'created_at']
+    ordering_fields = ['created_at']
     ordering = ['-created_at']
 
     def destroy(self, request, *args, **kwargs):
@@ -29,7 +29,7 @@ class SoundViewSet(viewsets.ModelViewSet):
     @action(detail=False, methods=['get'])
     def preprocessed(self, request):
         """Get all preprocessed sounds"""
-        sounds = self.get_queryset().filter(preprocessing=True)
+        sounds = self.get_queryset()
 
         # Apply pagination
         page = self.paginate_queryset(sounds)
@@ -43,7 +43,7 @@ class SoundViewSet(viewsets.ModelViewSet):
     @action(detail=False, methods=['get'])
     def unprocessed(self, request):
         """Get all unprocessed sounds"""
-        sounds = self.get_queryset().filter(preprocessing=False)
+        sounds = self.get_queryset()
 
         # Apply pagination
         page = self.paginate_queryset(sounds)

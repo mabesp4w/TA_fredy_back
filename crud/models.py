@@ -71,7 +71,7 @@ class Sound(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     bird = models.ForeignKey(Bird, on_delete=models.CASCADE)
     sound_file = models.FileField(upload_to=get_random_filename_sound)
-    location = models.CharField(max_length=200)
+    location = models.CharField(max_length=200, null=True, blank=True)
     description = models.TextField(null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)

@@ -48,7 +48,7 @@ class SoundSerializer(serializers.ModelSerializer):
     class Meta:
         model = Sound
         fields = ['id', 'bird', 'bird_name', 'sound_file', 'recording_date',
-                  'location', 'description', 'preprocessing', 'created_at', 'updated_at']
+                  'location', 'description',  'created_at', 'updated_at']
 
 
 class DashboardStatsSerializer(serializers.Serializer):
@@ -60,8 +60,6 @@ class DashboardStatsSerializer(serializers.Serializer):
     recentBirds = serializers.IntegerField()
     recentImages = serializers.IntegerField()
     recentSounds = serializers.IntegerField()
-    preprocessedSounds = serializers.IntegerField()
-    rawSounds = serializers.IntegerField()
 
 
 class RecentActivitySerializer(serializers.Serializer):

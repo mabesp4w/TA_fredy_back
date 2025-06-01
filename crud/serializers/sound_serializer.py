@@ -10,7 +10,7 @@ class SoundSerializer(serializers.ModelSerializer):
         model = Sound
         fields = [
             'id', 'bird', 'bird_name', 'sound_file', 'sound_url',
-            'recording_date', 'location', 'description', 'preprocessing',
+            'location', 'description',
             'created_at', 'updated_at'
         ]
         read_only_fields = ['id', 'created_at', 'updated_at']

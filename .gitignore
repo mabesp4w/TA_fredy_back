@@ -32,7 +32,7 @@ ENV/
 
 # Static files
 staticfiles/
-static/
+#static/
 
 # Dependency directories
 node_modules/

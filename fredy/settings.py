@@ -11,6 +11,8 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 """
 
 from pathlib import Path
+
+from django.conf import settings
 from dotenv import load_dotenv
 import os
 
@@ -225,6 +227,34 @@ STATICFILES_DIRS = [
 
 # Lokasi folder untuk mengumpulkan file statis saat deploy (collectstatic)
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+
+# Membuat folder logs jika belum ada
+log_dir = os.path.join(settings.BASE_DIR, 'logs')
+if not os.path.exists(log_dir):
+    os.makedirs(log_dir)
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'handlers': {
+        'console': {
+            'level': 'DEBUG',
+            'class': 'logging.StreamHandler',
+        },
+        'file': {
+            'level': 'ERROR',
+            'class': 'logging.FileHandler',
+            'filename': os.path.join(log_dir, 'logfile.log'),
+        },
+    },
+    'loggers': {
+        'django': {
+            'handlers': ['console', 'file'],
+            'level': 'ERROR',
+            'propagate': True,
+        },
+    },
+}
 
 
 # Default primary key field type

@@ -226,7 +226,41 @@ STATICFILES_DIRS = [
 # Lokasi folder untuk mengumpulkan file statis saat deploy (collectstatic)
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
+# Untuk temporary files
+TEMP_DIR = os.path.join(BASE_DIR, 'temp')
 
+# Pastikan directory exists
+if not os.path.exists(TEMP_DIR):
+    os.makedirs(TEMP_DIR)
+
+# Logging configuration
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'handlers': {
+        'file': {
+            'level': 'INFO',
+            'class': 'logging.FileHandler',
+            'filename': os.path.join(BASE_DIR, 'logs', 'audio_processing.log'),
+        },
+        'console': {
+            'level': 'INFO',
+            'class': 'logging.StreamHandler',
+        },
+    },
+    'loggers': {
+        'api.utils.preprocessing_audio': {
+            'handlers': ['file', 'console'],
+            'level': 'INFO',
+            'propagate': True,
+        },
+        '__main__': {  # untuk file ini
+            'handlers': ['file', 'console'],
+            'level': 'INFO',
+            'propagate': True,
+        },
+    },
+}
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field

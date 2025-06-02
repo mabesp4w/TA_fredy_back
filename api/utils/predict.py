@@ -1,3 +1,5 @@
+import os
+
 import joblib
 import pandas as pd
 from api.utils.preprocessing_audio import preprocess_audio, extract_features
@@ -11,13 +13,16 @@ def load_model(model_path='api/utils/random_forest_model.joblib'):
 
 def predict_single_audio(audio_path, model=None):
     try:
+        if not os.path.exists(audio_path):
+            return {"error": f"Audio file not found at {audio_path}"}
+
         if model is None:
             model = load_model()
 
         # Preprocess audio
         processed_audio = preprocess_audio(audio_path)
         if processed_audio is None:
-            return None
+            return {"error": "Failed to preprocess audio"}
 
         # Extract features
         features = extract_features(processed_audio)

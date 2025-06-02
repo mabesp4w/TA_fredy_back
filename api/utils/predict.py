@@ -1,20 +1,29 @@
-import os
-
 import joblib
 import pandas as pd
 from api.utils.preprocessing_audio import preprocess_audio, extract_features
-
 from crud.serializers import BirdDetailSerializer
 from crud.models import Bird
+import tempfile
 
 
 def load_model(model_path='api/utils/random_forest_model.joblib'):
     return joblib.load(model_path)
 
-def predict_single_audio(audio_path, model=None):
+def save_audio_tempfile(audio_file):
+    """
+    Menyimpan file audio yang diupload ke dalam file sementara di disk
+    """
+    with tempfile.NamedTemporaryFile(delete=False, suffix='.wav') as temp_file:
+        for chunk in audio_file.chunks():
+            temp_file.write(chunk)
+        return temp_file.name  # Mengembalikan path sementara file audio
+
+def predict_single_audio(audio_file, model=None):
     try:
-        if not os.path.exists(audio_path):
-            return {"error": f"Audio file not found at {audio_path}"}
+        # Simpan file audio yang diupload ke file sementara
+        audio_path = save_audio_tempfile(audio_file)
+        if not audio_path:
+            return {"error": "Failed to save audio file"}
 
         if model is None:
             model = load_model()

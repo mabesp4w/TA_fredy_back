@@ -6,6 +6,9 @@ from crud.serializers import BirdDetailSerializer
 from crud.models import Bird
 
 
+print(f"joblib version: {joblib.__version__}")
+
+
 def load_model(model_path='api/utils/random_forest_model.joblib'):
     return joblib.load(model_path)
 

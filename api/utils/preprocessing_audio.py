@@ -1,4 +1,5 @@
 # utils/preporcessing_audio.py
+import tempfile
 
 import resampy
 import soundfile as sf
@@ -7,7 +8,8 @@ import numpy as np
 import os
 import pandas as pd
 
-
+print(f"librosa version: {librosa.__version__}")
+print(f"soundfile version: {sf.__version__}")
 
 def preprocess_audio(audio_path, sr=22050, duration=3):
     """
@@ -20,6 +22,17 @@ def preprocess_audio(audio_path, sr=22050, duration=3):
         normalized_audio: audio yang sudah dinormalisasi
     """
     try:
+        # Cek apakah server dapat menulis ke folder sementara
+        with tempfile.NamedTemporaryFile(delete=False) as tmp_file:
+            tmp_audio_path = tmp_file.name
+            if not os.access(tmp_audio_path, os.W_OK):
+                print(f"Error: Permission denied for writing to temporary file: {tmp_audio_path}")
+                return {"error": "Permission denied for writing temporary files"}
+        print(f"Processing audio: {audio_path}")
+        # Cek apakah file bisa dibaca
+        if not os.access(audio_path, os.R_OK):
+            print(f"Error: Permission denied for reading {audio_path}")
+            return None
        # Load audio file dengan parameter tambahan
         audio, sr = librosa.load(audio_path, sr=sr, res_type='kaiser_fast', duration=duration)
         # Jika loading berhasil tapi audio kosong

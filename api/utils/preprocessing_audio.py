@@ -1,5 +1,4 @@
 # utils/preporcessing_audio.py
-import tempfile
 
 import resampy
 import soundfile as sf
@@ -8,10 +7,7 @@ import numpy as np
 import os
 import pandas as pd
 
-# Setup logger
-import logging
-logger = logging.getLogger(__name__)
-logging.basicConfig(level=logging.DEBUG)
+
 
 def preprocess_audio(audio_path, sr=22050, duration=3):
     """
@@ -23,25 +19,12 @@ def preprocess_audio(audio_path, sr=22050, duration=3):
     Returns:
         normalized_audio: audio yang sudah dinormalisasi
     """
-    logger.debug(f"librosa version: {librosa.__version__}")
-    logger.debug(f"soundfile version: {sf.__version__}")
     try:
-        # Cek apakah server dapat menulis ke folder sementara
-        with tempfile.NamedTemporaryFile(delete=False) as tmp_file:
-            tmp_audio_path = tmp_file.name
-            if not os.access(tmp_audio_path, os.W_OK):
-                logger.error(f"Error: Permission denied for writing to temporary file: {tmp_audio_path}")
-                return {"error": "Permission denied for writing temporary files"}
-        logger.info(f"Processing audio: {audio_path}")
-        # Cek apakah file bisa dibaca
-        if not os.access(audio_path, os.R_OK):
-            logger.error(f"Error: Permission denied for reading {audio_path}")
-            return None
        # Load audio file dengan parameter tambahan
         audio, sr = librosa.load(audio_path, sr=sr, res_type='kaiser_fast', duration=duration)
         # Jika loading berhasil tapi audio kosong
         if len(audio) == 0:
-            logger.error(f"Warning: Empty audio file - {audio_path}")
+            print(f"Warning: Empty audio file - {audio_path}")
             return None
         
         # Normalisasi amplitudo (-1 to 1)
@@ -67,7 +50,7 @@ def preprocess_audio(audio_path, sr=22050, duration=3):
         
         return normalized_audio
     except Exception as e:
-        logger.error(f"Error processing {audio_path}: {str(e)}")
+        print(f"Error processing {audio_path}: {str(e)}")
         return None
     
 def validate_audio(audio_path):
@@ -84,7 +67,7 @@ def validate_audio(audio_path):
         
         return output_path
     except Exception as e:
-        logger.error(f"Cannot fix {audio_path}: {str(e)}")
+        print(f"Cannot fix {audio_path}: {str(e)}")
         return None
     
 def check_audio_format(audio_path):
@@ -93,14 +76,14 @@ def check_audio_format(audio_path):
     """
     try:
         info = sf.info(audio_path)
-        logger.info(f"File: {audio_path}")
-        logger.info(f"Format: {info.format}")
-        logger.info(f"Channels: {info.channels}")
-        logger.info(f"Sample rate: {info.samplerate}")
-        logger.info(f"Duration: {info.duration} seconds")
+        print(f"File: {audio_path}")
+        print(f"Format: {info.format}")
+        print(f"Channels: {info.channels}")
+        print(f"Sample rate: {info.samplerate}")
+        print(f"Duration: {info.duration} seconds")
         return True
     except Exception as e:
-        logger.error(f"Invalid audio file {audio_path}: {str(e)}")
+        print(f"Invalid audio file {audio_path}: {str(e)}")
         return False
 
 def extract_features(audio):

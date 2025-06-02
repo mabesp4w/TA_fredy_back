@@ -4,18 +4,12 @@ from api.utils.preprocessing_audio import preprocess_audio, extract_features
 
 from crud.serializers import BirdDetailSerializer
 from crud.models import Bird
-# Setup logger
-import logging
-logger = logging.getLogger(__name__)
-logging.basicConfig(level=logging.DEBUG)
-
 
 
 def load_model(model_path='api/utils/random_forest_model.joblib'):
     return joblib.load(model_path)
 
 def predict_single_audio(audio_path, model=None):
-    logger.info(f"joblib version: {joblib.__version__}")
     try:
         if model is None:
             model = load_model()

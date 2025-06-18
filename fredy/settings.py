@@ -116,7 +116,8 @@ CORS_ALLOW_ALL_ORIGINS = True
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:3099",
     "https://fredy.ta-uogp.my.id",
-    "https://fredy-wwf.vercel.app"
+    "https://fredy-wwf.vercel.app",
+    "https://fredy-uogp.vercel.app"
 ]
 
 # ALLOWED_HOSTS = ['fredy.ta-uogp.my.id', 'localhost', '127.0.0.1']
@@ -125,7 +126,8 @@ ALLOWED_HOSTS=['*']
 CSRF_TRUSTED_ORIGINS = [
     "http://localhost:3099",
     "https://fredy.ta-uogp.my.id",
-    "https://fredy-wwf.vercel.app"
+    "https://fredy-wwf.vercel.app",
+    "https://fredy-uogp.vercel.app"
 ]
 
 CORS_ALLOW_METHODS = [

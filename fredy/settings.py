@@ -113,12 +113,12 @@ CORS_ALLOW_CREDENTIALS = True
 CORS_ALLOW_ALL_ORIGINS = True
 
 # Tambahkan domain localhost dengan spesifik port ke dalam CORS_ALLOWED_ORIGINS
-CORS_ALLOWED_ORIGINS = ['*']
+# CORS_ALLOWED_ORIGINS = ['*']
 
 # ALLOWED_HOSTS = ['fredy.ta-uogp.my.id', 'localhost', '127.0.0.1']
 ALLOWED_HOSTS=['*']
 
-CSRF_TRUSTED_ORIGINS = ['*']
+# CSRF_TRUSTED_ORIGINS = ['*']
 
 CORS_ALLOW_METHODS = [
     "GET",

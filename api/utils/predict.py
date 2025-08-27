@@ -4,6 +4,8 @@ import tempfile
 import os
 import logging
 from django.conf import settings
+
+from api.utils.file_storage import audio_storage
 from api.utils.preprocessing_audio import preprocess_audio, extract_features
 from crud.serializers import BirdDetailSerializer
 from crud.models import Bird
@@ -25,51 +27,23 @@ def load_model(model_path=None):
 
 def save_audio_tempfile(audio_file):
     """
-    Menyimpan file audio yang diupload ke dalam file sementara di disk
+    Menyimpan file audio menggunakan custom storage
     """
     try:
-        # Pastikan kita mendapatkan file extension yang benar
-        original_name = getattr(audio_file, 'name', 'audio.wav')
-        file_extension = os.path.splitext(original_name)[1] or '.wav'
+        logger.info(f"Saving audio file: {getattr(audio_file, 'name', 'unknown')}")
 
-        # Gunakan directory temp yang aman
-        temp_dir = getattr(settings, 'TEMP_DIR', tempfile.gettempdir())
+        # Gunakan custom storage
+        temp_path = audio_storage.save_temp_audio(audio_file)
 
-        with tempfile.NamedTemporaryFile(
-                delete=False,
-                suffix=file_extension,
-                dir=temp_dir,
-                prefix='audio_'
-        ) as temp_file:
-            # Reset file pointer jika perlu
-            if hasattr(audio_file, 'seek'):
-                audio_file.seek(0)
-
-            # Write file chunks
-            for chunk in audio_file.chunks():
-                temp_file.write(chunk)
-
-            temp_file.flush()  # Ensure data is written to disk
-            os.fsync(temp_file.fileno())  # Force write to disk
-
-            temp_path = temp_file.name
-
-        # Verify file was created and has content
-        if not os.path.exists(temp_path):
-            logger.error(f"Temporary file was not created: {temp_path}")
+        if temp_path:
+            logger.info(f"Audio saved successfully to: {temp_path}")
+            return temp_path
+        else:
+            logger.error("Failed to save audio file using custom storage")
             return None
-
-        file_size = os.path.getsize(temp_path)
-        if file_size == 0:
-            logger.error(f"Temporary file is empty: {temp_path}")
-            os.unlink(temp_path)
-            return None
-
-        logger.info(f"Audio file saved to: {temp_path} (size: {file_size} bytes)")
-        return temp_path
 
     except Exception as e:
-        logger.error(f"Error creating temp file: {e}")
+        logger.error(f"Error in save_audio_tempfile: {e}")
         return None
 
 

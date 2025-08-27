@@ -10,6 +10,7 @@ services:
         condition: service_healthy    # Tunggu sampai db healthy
     environment:
       - DEBUG=1
+    command: python manage.py runserver 0.0.0.0:8103
 
   db:
     image: mysql:8.0

@@ -257,4 +257,14 @@ LOGGING = {
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 
+# Custom temp directory dalam project
+TEMP_AUDIO_DIR = os.path.join(MEDIA_ROOT, 'temp_audio')
+UPLOADS_DIR = os.path.join(MEDIA_ROOT, 'uploads')
+# Pastikan direktori ada saat startup
+os.makedirs(TEMP_AUDIO_DIR, exist_ok=True)
+os.makedirs(UPLOADS_DIR, exist_ok=True)
+# File upload settings
+FILE_UPLOAD_MAX_MEMORY_SIZE = 50 * 1024 * 1024  # 50MB
+DATA_UPLOAD_MAX_MEMORY_SIZE = 50 * 1024 * 1024   # 50MB
+
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'

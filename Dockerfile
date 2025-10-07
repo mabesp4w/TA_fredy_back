@@ -1,4 +1,4 @@
-FROM python:3.13-slim
+FROM python:3.11-slim
 
 # Set environment variables
 ENV PYTHONDONTWRITEBYTECODE 1
@@ -13,6 +13,13 @@ RUN apt-get update \
         default-libmysqlclient-dev \
         gcc \
         pkg-config \
+        libsndfile1 \
+        ffmpeg \
+        libsm6 \
+        libxext6 \
+        libfontconfig1 \
+        libxrender1 \
+        libgl1-mesa-dev \
     && rm -rf /var/lib/apt/lists/*
 
 # Install Python dependencies

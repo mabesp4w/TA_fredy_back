@@ -3,6 +3,7 @@ services:
     build: .
     volumes:
       - .:/app
+      - ../MLBurung:/app/../MLBurung
     ports:
       - "8103:8103"
     depends_on:

@@ -1,0 +1,25 @@
+{
+    "sample_rate": 22050,
+    "duration": 5,
+    "n_mels": 128,
+    "n_fft": 2048,
+    "hop_length": 512,
+    "num_classes": 10,
+    "class_names": [
+        "Aegithina tiphia",
+        "Aplonis panayensis",
+        "Cacatua galerita",
+        "Eclectus roratus",
+        "Geoffroyus geoffroyi",
+        "Geopelia striata",
+        "Orthotomus sutorius",
+        "Pycnonotus aurigaster",
+        "Rhyticeros plicatus",
+        "Tanysiptera galatea"
+    ],
+    "training_date": "2025-10-07 08:28:11",
+    "test_accuracy": 0.7853260636329651,
+    "test_loss": 0.7359218001365662,
+    "epochs": 50,
+    "batch_size": 32
+}

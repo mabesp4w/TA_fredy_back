@@ -1,0 +1,12 @@
+=== Training Summary ===
+Date: 2025-10-07 08:28:11
+Dataset: suara_burung_augmented
+Total samples: 3676
+Training samples: 2940
+Testing samples: 736
+Number of classes: 10
+Epochs: 50
+Batch size: 32
+Test accuracy: 0.7853
+Test loss: 0.7359
+Output directory: model_20251007_063007

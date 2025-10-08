@@ -1,0 +1,6 @@
+file_name,file_path,rank,predicted_class,confidence,confidence_percentage
+test_audio.wav,test_audio.wav,1,Aegithina tiphia,0.99150884,99.15089
+test_audio.wav,test_audio.wav,2,Tanysiptera galatea,0.0038504172,0.3850417
+test_audio.wav,test_audio.wav,3,Rhyticeros plicatus,0.0023031768,0.23031768
+test_audio.wav,test_audio.wav,4,Eclectus roratus,0.0007631184,0.07631184
+test_audio.wav,test_audio.wav,5,Geopelia striata,0.00071011373,0.07101137

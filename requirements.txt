@@ -46,5 +46,4 @@ tzdata==2025.2
 urllib3==2.5.0
 tensorflow==2.19.0
 keras==3.11.3
-tf_keras==2.19.0
 h5py==3.14.0

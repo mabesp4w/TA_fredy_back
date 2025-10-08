@@ -6,19 +6,13 @@ import json
 import logging
 from django.conf import settings
 
-# Try to import tf_keras first, fallback to keras
-try:
-    import tf_keras as keras
-except ImportError:
-    try:
-        from tensorflow import keras
-    except ImportError:
-        import keras
+# Use Keras 3.x (standalone) - compatible with YAMNet model
+import keras
 
 from api.utils.file_storage import audio_storage
 from crud.serializers import BirdDetailSerializer
 from crud.models import Bird
-from api.utils.mlburung_predict import predict_with_mlburung_model
+# from api.utils.mlburung_predict import predict_with_mlburung_model  # Removed - using new model
 
 # Disable GPU warnings
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'
@@ -28,7 +22,7 @@ logger = logging.getLogger(__name__)
 
 def load_model_config():
     """Load model configuration"""
-    config_path = os.path.join(settings.BASE_DIR, 'api/utils/model/model_config.json')
+    config_path = os.path.join(settings.BASE_DIR, 'models/model_config.json')
     if not os.path.exists(config_path):
         raise FileNotFoundError(f"Model config file not found at: {config_path}")
     
@@ -38,7 +32,7 @@ def load_model_config():
 
 def load_class_names():
     """Load class names"""
-    class_names_path = os.path.join(settings.BASE_DIR, 'api/utils/model/class_names.json')
+    class_names_path = os.path.join(settings.BASE_DIR, 'models/class_names.json')
     if not os.path.exists(class_names_path):
         raise FileNotFoundError(f"Class names file not found at: {class_names_path}")
     
@@ -47,56 +41,22 @@ def load_class_names():
     return class_names
 
 def load_model(model_path=None):
-    """Load the trained TensorFlow model with proper path handling and compatibility fixes"""
+    """Load the trained YAMNet model with Keras 3.x"""
     if model_path is None:
-        # Try different model versions in order of preference
-        model_paths = [
-            ('compatible', os.path.join(settings.BASE_DIR, 'api/utils/model/bird_sound_classifier_compatible.h5')),
-            ('alternative', os.path.join(settings.BASE_DIR, 'api/utils/model/bird_sound_classifier_alternative.h5')),
-            ('simple', os.path.join(settings.BASE_DIR, 'api/utils/model/bird_sound_classifier_simple.h5')),
-            ('original', os.path.join(settings.BASE_DIR, 'api/utils/model/bird_sound_classifier.h5'))
-        ]
-        
-        # Try each model path until one is found
-        for model_type, path in model_paths:
-            if os.path.exists(path):
-                model_path = path
-                logger.info(f"Using {model_type} model")
-                break
-        else:
-            raise FileNotFoundError("No model files found in api/utils/model/")
+        model_path = os.path.join(settings.BASE_DIR, 'models/bird_sound_classifier.h5')
 
     if not os.path.exists(model_path):
         raise FileNotFoundError(f"Model file not found at: {model_path}")
 
     try:
-        # Try loading with compile=False first
+        # Load model with Keras 3.x
+        logger.info(f"Loading model from: {model_path}")
         model = keras.models.load_model(model_path, compile=False)
-        logger.info("Model loaded successfully with compile=False")
+        logger.info("Model loaded successfully with Keras 3.x")
         return model
     except Exception as e:
-        logger.warning(f"Failed to load model with compile=False: {e}")
-        try:
-            # Try loading with custom_objects
-            model = keras.models.load_model(
-                model_path, 
-                custom_objects={
-                    'InputLayer': keras.layers.InputLayer,
-                },
-                compile=False
-            )
-            logger.info("Model loaded successfully with custom_objects")
-            return model
-        except Exception as e2:
-            logger.error(f"Failed to load model with custom_objects: {e2}")
-            try:
-                # Last resort: try loading normally
-                model = keras.models.load_model(model_path)
-                logger.info("Model loaded successfully with default settings")
-                return model
-            except Exception as e3:
-                logger.error(f"All model loading attempts failed: {e3}")
-                raise Exception(f"Failed to load model: {e3}")
+        logger.error(f"Failed to load model: {e}")
+        raise Exception(f"Failed to load model: {e}")
 
 
 def load_audio_file(file_path, sr=22050, duration=5):
@@ -155,10 +115,9 @@ def save_audio_tempfile(audio_file):
         return None
 
 
-def predict_single_audio(audio_file, model=None, config=None, class_names=None, use_mlburung_fallback=True):
+def predict_single_audio(audio_file, model=None, config=None, class_names=None, use_mlburung_fallback=False):
     """
     Predict bird species from audio file using TensorFlow model
-    If TensorFlow model fails, fallback to MLBurung model
     """
     audio_path = None
     try:
@@ -169,34 +128,34 @@ def predict_single_audio(audio_file, model=None, config=None, class_names=None, 
             logger.error("No audio file provided")
             return {"error": "No audio file provided"}
 
-        # Try MLBurung model first if requested
-        if use_mlburung_fallback:
-            try:
-                logger.info("Trying MLBurung model first...")
-                mlburung_result = predict_with_mlburung_model(audio_file)
-                
-                if 'error' not in mlburung_result:
-                    # Get bird data from database
-                    try:
-                        bird = Bird.objects.filter(scientific_nm=mlburung_result['scientific_nm']).first()
-                        if bird:
-                            bird_data = BirdDetailSerializer(bird).data
-                            mlburung_result['bird_data'] = bird_data
-                        else:
-                            mlburung_result['bird_data'] = None
-                    except Exception as e:
-                        logger.warning(f"Failed to get bird data: {e}")
-                        mlburung_result['bird_data'] = None
-                    
-                    logger.info(f"MLBurung prediction successful: {mlburung_result['scientific_nm']}")
-                    return mlburung_result
-                else:
-                    logger.warning(f"MLBurung model failed: {mlburung_result['error']}")
-            except Exception as e:
-                logger.warning(f"MLBurung model error: {e}")
+        # MLBurung model fallback disabled - using new YAMNet model
+        # if use_mlburung_fallback:
+        #     try:
+        #         logger.info("Trying MLBurung model first...")
+        #         mlburung_result = predict_with_mlburung_model(audio_file)
+        #         
+        #         if 'error' not in mlburung_result:
+        #             # Get bird data from database
+        #             try:
+        #                 bird = Bird.objects.filter(scientific_nm=mlburung_result['scientific_nm']).first()
+        #                 if bird:
+        #                     bird_data = BirdDetailSerializer(bird).data
+        #                     mlburung_result['bird_data'] = bird_data
+        #                 else:
+        #                     mlburung_result['bird_data'] = None
+        #             except Exception as e:
+        #                 logger.warning(f"Failed to get bird data: {e}")
+        #                 mlburung_result['bird_data'] = None
+        #             
+        #             logger.info(f"MLBurung prediction successful: {mlburung_result['scientific_nm']}")
+        #             return mlburung_result
+        #         else:
+        #             logger.warning(f"MLBurung model failed: {mlburung_result['error']}")
+        #     except Exception as e:
+        #         logger.warning(f"MLBurung model error: {e}")
 
-        # Fallback to TensorFlow model
-        logger.info("Using TensorFlow model fallback...")
+        # Using YAMNet TensorFlow model
+        logger.info("Using YAMNet TensorFlow model...")
 
         # Load model config jika belum ada
         if config is None:
@@ -293,18 +252,18 @@ def predict_single_audio(audio_file, model=None, config=None, class_names=None, 
                     'scientific_nm': prediction,
                     'confidence': confidence,
                     'bird_data': None,
-                    'method': 'tensorflow_fallback'
+                    'method': 'yamnet_model'
                 }
 
             # Serialize the bird data using the BirdDetailSerializer
             bird_data = BirdDetailSerializer(bird).data
 
-            logger.info(f"Successfully completed TensorFlow prediction for {prediction}")
+            logger.info(f"Successfully completed YAMNet prediction for {prediction}")
             return {
                 'scientific_nm': prediction,
                 'confidence': confidence,
                 'bird_data': bird_data,
-                'method': 'tensorflow_fallback'
+                'method': 'yamnet_model'
             }
 
         except Exception as e:
@@ -455,8 +414,8 @@ def main():
     
     parser = argparse.ArgumentParser(description='Predict bird species from audio files')
     parser.add_argument('audio_path', type=str, help='Path to audio file or directory')
-    parser.add_argument('--model', type=str, default='api/utils/model/bird_sound_classifier.h5', 
-                       help='Path to trained model (default: api/utils/model/bird_sound_classifier.h5)')
+    parser.add_argument('--model', type=str, default='models/bird_sound_classifier.h5', 
+                       help='Path to trained model (default: models/bird_sound_classifier.h5)')
     parser.add_argument('--threshold', type=float, default=0.5,
                        help='Confidence threshold for predictions (default: 0.5)')
     parser.add_argument('--cpu', action='store_true', help='Force CPU usage')

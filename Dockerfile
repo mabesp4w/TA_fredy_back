@@ -10,16 +10,16 @@ WORKDIR /app
 # Install system dependencies
 RUN apt-get update \
     && apt-get install -y --no-install-recommends \
-        default-libmysqlclient-dev \
-        gcc \
-        pkg-config \
-        libsndfile1 \
-        ffmpeg \
-        libsm6 \
-        libxext6 \
-        libfontconfig1 \
-        libxrender1 \
-        libgl1-mesa-dev \
+    default-libmysqlclient-dev \
+    gcc \
+    pkg-config \
+    libsndfile1 \
+    ffmpeg \
+    libsm6 \
+    libxext6 \
+    libfontconfig1 \
+    libxrender1 \
+    libgl1-mesa-dev \
     && rm -rf /var/lib/apt/lists/*
 
 # Install Python dependencies

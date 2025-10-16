@@ -22,40 +22,65 @@ logger = logging.getLogger(__name__)
 def load_model_config():
     """Load model configuration (updated for bird model)"""
     config_path = os.path.join(settings.BASE_DIR, 'models/model_config.json')
+    logger.info(f"Loading config from: {config_path}")
+
     if not os.path.exists(config_path):
         # Fallback hardcoded config untuk model burung jika file tidak ada
         logger.warning(f"Model config file not found at: {config_path}. Using hardcoded defaults.")
+        config = {
+            "sample_rate": 22050,
+            "duration": 3,
+            "n_mfcc": 40,
+            "max_time_steps": 216,
+            "num_classes": 42,
+            "tflite_version": "float32"  # Default TFLite version
+        }
+        logger.info(f"Using fallback config: {config}")
+        return config
+
+    try:
+        with open(config_path, 'r') as f:
+            config = json.load(f)
+        logger.info(f"Loaded config from file: {config}")
+        return config
+    except Exception as e:
+        logger.error(f"Error loading config file: {e}")
+        # Fallback jika file ada tapi error saat parsing
+        logger.warning("Using hardcoded config due to parsing error.")
         return {
             "sample_rate": 22050,
             "duration": 3,
-            "n_mels": 128,
-            "hop_length": 512,
-            "n_fft": 2048,
-            "target_time_steps": 128,
-            "tflite_version": "int8"  # Default TFLite version
+            "n_mfcc": 40,
+            "max_time_steps": 216,
+            "num_classes": 42,
+            "tflite_version": "float32"
         }
-
-    with open(config_path, 'r') as f:
-        config = json.load(f)
-    return config
 
 
 def load_class_names():
     """Load class names"""
     class_names_path = os.path.join(settings.BASE_DIR, 'models/class_names.json')
+    logger.info(f"Loading class names from: {class_names_path}")
+
     if not os.path.exists(class_names_path):
+        logger.error(f"Class names file not found at: {class_names_path}")
         raise FileNotFoundError(f"Class names file not found at: {class_names_path}")
 
-    with open(class_names_path, 'r') as f:
-        class_names = json.load(f)
-    return class_names
+    try:
+        with open(class_names_path, 'r') as f:
+            class_names = json.load(f)
+        logger.info(f"Loaded {len(class_names)} class names")
+        return class_names
+    except Exception as e:
+        logger.error(f"Error loading class names: {e}")
+        raise
 
 
 def load_model(tflite_version='int8', model_path=None):
     """Load TFLite model dengan tflite-runtime (hanya TFLite support)"""
     if model_path is None:
         base_path = os.path.join(settings.BASE_DIR, 'models')
-        model_filename = f'bird_species_model_{tflite_version}.tflite'
+        model_filename = f'bird_classifier_{tflite_version}.tflite'
         model_path = os.path.join(base_path, model_filename)
 
     if not os.path.exists(model_path):
@@ -102,75 +127,109 @@ def preprocess_audio(audio_path, sr=22050, duration=3):
         return None
 
 
-def extract_mel_spectrogram(audio, config):
-    """Ekstrak mel-spectrogram dari audio (match model burung)"""
+def extract_mfcc_features(audio, config):
+    """Ekstrak MFCC dari audio (sesuai dengan model TFLite yang ada)"""
     try:
-        mel_spec = librosa.feature.melspectrogram(
+        logger.info(f"Extracting MFCC with config: {config}")
+
+        # Validasi config parameters
+        required_params = ['sample_rate', 'n_mfcc', 'max_time_steps']
+        for param in required_params:
+            if param not in config:
+                logger.error(f"Missing required config parameter: {param}")
+                return None
+
+        sample_rate = config['sample_rate']
+        n_mfcc = config['n_mfcc']
+        max_time_steps = config['max_time_steps']
+
+        logger.info(f"MFCC params: sr={sample_rate}, n_mfcc={n_mfcc}, max_time_steps={max_time_steps}")
+        logger.info(f"Audio shape: {audio.shape}")
+
+        # Ekstrak MFCC
+        mfcc = librosa.feature.mfcc(
             y=audio,
-            sr=config['sample_rate'],
-            n_mels=config['n_mels'],
-            n_fft=config['n_fft'],
-            hop_length=config['hop_length']
+            sr=sample_rate,
+            n_mfcc=n_mfcc
         )
 
-        # Konversi ke dB scale
-        mel_spec_db = librosa.power_to_db(mel_spec, ref=np.max)
+        logger.info(f"Raw MFCC shape: {mfcc.shape}")
 
-        # Resize ke target time steps (untuk model burung)
-        target_time_steps = config.get('target_time_steps', 128)
-        if mel_spec_db.shape[1] > target_time_steps:
-            mel_spec_db = mel_spec_db[:, :target_time_steps]
+        # Padding atau crop untuk max_time_steps
+        if mfcc.shape[1] < max_time_steps:
+            mfcc = np.pad(mfcc, ((0, 0), (0, max_time_steps - mfcc.shape[1])), mode='constant')
         else:
-            mel_spec_db = np.pad(mel_spec_db, ((0, 0), (0, target_time_steps - mel_spec_db.shape[1])), 'constant')
+            mfcc = mfcc[:, :max_time_steps]
 
-        return mel_spec_db
+        logger.info(f"Padded/cropped MFCC shape: {mfcc.shape}")
+
+        # Transpose untuk format (time_steps, n_mfcc) -> (max_time_steps, n_mfcc)
+        result = mfcc.T
+        logger.info(f"Final MFCC shape: {result.shape}")
+
+        return result
+
     except Exception as e:
-        logger.error(f"Error extracting mel-spectrogram: {e}")
+        logger.error(f"Error extracting MFCC: {e}")
+        import traceback
+        logger.error(f"Traceback: {traceback.format_exc()}")
         return None
 
 
 def normalize_features(feat, config):
-    """Normalisasi Mel Spectrogram (approx atau scaler)"""
-    scaler_path = os.path.join(settings.BASE_DIR, 'models/scaler.npy')
-    use_scaler = os.path.exists(scaler_path)
+    """Normalisasi MFCC menggunakan mean dan std dari normalization_params.npz"""
+    try:
+        norm_params_path = os.path.join(settings.BASE_DIR, 'models/normalization_params.npz')
+        logger.info(f"Loading normalization params from: {norm_params_path}")
 
-    if use_scaler:
-        try:
-            scaler = np.load(scaler_path)
-            min_val, max_val = scaler
-            feat_norm = (feat - min_val) / (max_val - min_val + 1e-8)
-            logger.info(f"Using scaler: min={min_val:.2f}, max={max_val:.2f}")
-        except Exception as e:
-            logger.warning(f"Error loading scaler: {e}. Using approx normalization.")
-            feat_norm = (feat + 80) / 80.0  # Approx untuk Mel DB (-80 to 0)
-    else:
-        feat_norm = (feat + 80) / 80.0
-        logger.info("Using approx normalization (-80 to 0 dB)")
+        if not os.path.exists(norm_params_path):
+            logger.error(f"Normalization params file not found at: {norm_params_path}")
+            raise FileNotFoundError(f"Normalization params file not found at: {norm_params_path}")
 
-    feat_norm = np.clip(feat_norm, 0, 1)
-    return feat_norm
+        norm_params = np.load(norm_params_path)
+        mean = norm_params['mean']
+        std = norm_params['std']
+
+        logger.info(f"Loaded normalization params - mean shape: {mean.shape}, std shape: {std.shape}")
+        logger.info(f"Feature shape before normalization: {feat.shape}")
+
+        # Normalisasi menggunakan mean dan std
+        feat_norm = (feat - mean) / (std + 1e-8)
+
+        logger.info(f"Feature shape after normalization: {feat_norm.shape}")
+        return feat_norm
+
+    except Exception as e:
+        logger.warning(f"Error loading normalization params: {e}. Using zero mean normalization.")
+        # Fallback ke zero mean normalization
+        feat_norm = (feat - np.mean(feat)) / (np.std(feat) + 1e-8)
+        logger.info(f"Used fallback normalization - feature shape: {feat_norm.shape}")
+        return feat_norm
 
 
-def predict_with_model(interpreter, input_details, output_details, mel_spec_input, tflite_version='int8'):
+def predict_with_model(interpreter, input_details, output_details, mfcc_input, tflite_version='float32'):
     """Prediksi dengan TFLite model (tflite-runtime)"""
     try:
-        version = tflite_version  # Bisa 'int8' atau 'float32'
-        logger.info(f"TFLite inference (version: {version})")
+        logger.info(f"TFLite inference (version: {tflite_version})")
 
-        # Preprocess input
-        input_data = mel_spec_input.astype(np.float32)
-        if version == 'int8':
+        # Input sudah dalam format yang benar (normalized MFCC)
+        input_data = mfcc_input.astype(input_details[0]['dtype'])
+
+        # Handle quantization untuk model int8
+        if tflite_version == 'int8' and input_details[0]['dtype'] == np.int8:
             input_scale, input_zero_point = input_details[0]['quantization']
-            input_data = input_data / input_scale + input_zero_point
+            input_data = input_scale * input_data + input_zero_point
             input_data = np.clip(input_data, -128, 127).astype(np.int8)
 
         # Inference
         interpreter.set_tensor(input_details[0]['index'], input_data)
         interpreter.invoke()
 
-        # Postprocess output
+        # Get output
         output_data = interpreter.get_tensor(output_details[0]['index'])
-        if version == 'int8':
+
+        # Handle quantization untuk output jika model int8
+        if tflite_version == 'int8' and output_details[0]['dtype'] == np.int8:
             output_scale, output_zero_point = output_details[0]['quantization']
             predictions = output_scale * (output_data.astype(np.float32) - output_zero_point)
         else:
@@ -205,7 +264,7 @@ def save_audio_tempfile(audio_file):
         return None
 
 
-def predict_single_audio(audio_file, tflite_version='int8', model=None, config=None, class_names=None):
+def predict_single_audio(audio_file, tflite_version='float32', model=None, config=None, class_names=None):
     """
     Predict bird species from audio file using TFLite (tflite-runtime)
     """
@@ -213,6 +272,8 @@ def predict_single_audio(audio_file, tflite_version='int8', model=None, config=N
     try:
         logger.info(
             f"Starting prediction for audio file: {getattr(audio_file, 'name', 'unknown')} (TFLite version: {tflite_version})")
+        logger.info(f"BASE_DIR: {settings.BASE_DIR}")
+        logger.info(f"Current working directory: {os.getcwd()}")
 
         # Validasi input
         if not audio_file:
@@ -245,19 +306,19 @@ def predict_single_audio(audio_file, tflite_version='int8', model=None, config=N
         if audio is None:
             return {"error": "Failed to preprocess audio file"}
 
-        # Extract mel-spectrogram
-        mel_spec = extract_mel_spectrogram(audio, config)
-        if mel_spec is None:
-            return {"error": "Failed to extract mel-spectrogram"}
+        # Extract MFCC features
+        mfcc_features = extract_mfcc_features(audio, config)
+        if mfcc_features is None:
+            return {"error": "Failed to extract MFCC features"}
 
         # Normalisasi
-        mel_spec_norm = normalize_features(mel_spec, config)
-        mel_spec_input = mel_spec_norm[np.newaxis, ..., np.newaxis]  # (1, 128, 128, 1)
+        mfcc_norm = normalize_features(mfcc_features, config)
+        mfcc_input = np.expand_dims(mfcc_norm, axis=0)  # (1, max_time_steps, n_mfcc)
 
-        logger.info(f"Input shape for model: {mel_spec_input.shape}")
+        logger.info(f"Input shape for model: {mfcc_input.shape}")
 
         # Predict
-        predictions = predict_with_model(interpreter, input_details, output_details, mel_spec_input, tflite_version)
+        predictions = predict_with_model(interpreter, input_details, output_details, mfcc_input, tflite_version)
 
         # Get top prediction
         top_index = np.argmax(predictions)
@@ -300,7 +361,7 @@ def predict_single_audio(audio_file, tflite_version='int8', model=None, config=N
                 logger.warning(f"Cleanup failed: {e}")
 
 
-def predict_from_file_path(file_path, tflite_version='int8', model=None, config=None, class_names=None, use_cpu=False):
+def predict_from_file_path(file_path, tflite_version='float32', model=None, config=None, class_names=None, use_cpu=False):
     """
     Predict from file path using TFLite (tflite-runtime)
     """
@@ -326,19 +387,19 @@ def predict_from_file_path(file_path, tflite_version='int8', model=None, config=
         if audio is None:
             return {"error": "Failed to preprocess audio"}
 
-        # Extract mel-spectrogram
-        mel_spec = extract_mel_spectrogram(audio, config)
-        if mel_spec is None:
-            return {"error": "Failed to extract mel-spectrogram"}
+        # Extract MFCC features
+        mfcc_features = extract_mfcc_features(audio, config)
+        if mfcc_features is None:
+            return {"error": "Failed to extract MFCC features"}
 
         # Normalisasi
-        mel_spec_norm = normalize_features(mel_spec, config)
-        mel_spec_input = mel_spec_norm[np.newaxis, ..., np.newaxis]  # (1, 128, 128, 1)
+        mfcc_norm = normalize_features(mfcc_features, config)
+        mfcc_input = np.expand_dims(mfcc_norm, axis=0)  # (1, max_time_steps, n_mfcc)
 
-        logger.info(f"Input shape for model: {mel_spec_input.shape}")
+        logger.info(f"Input shape for model: {mfcc_input.shape}")
 
         # Predict
-        predictions = predict_with_model(interpreter, input_details, output_details, mel_spec_input, tflite_version)
+        predictions = predict_with_model(interpreter, input_details, output_details, mfcc_input, tflite_version)
 
         # Get top 3 predictions
         top_indices = np.argsort(predictions)[-3:][::-1]
@@ -359,7 +420,7 @@ def predict_from_file_path(file_path, tflite_version='int8', model=None, config=
         return {"error": f"Unexpected error: {str(e)}"}
 
 
-def predict_batch_files(audio_files, tflite_version='int8', model=None, config=None, class_names=None, use_cpu=False):
+def predict_batch_files(audio_files, tflite_version='float32', model=None, config=None, class_names=None, use_cpu=False):
     """
     Predict batch using TFLite (tflite-runtime)
     """

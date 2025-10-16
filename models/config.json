@@ -1,0 +1,8 @@
+{
+  "sample_rate": 22050,
+  "duration": 3,
+  "n_mfcc": 40,
+  "max_time_steps": 216,
+  "num_classes": 42,
+  "tflite_version": "float32"
+}

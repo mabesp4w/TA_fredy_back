@@ -17,6 +17,22 @@
     },
     {
         "id": 3,
+        "scientific_nm": "Arses insularis",
+        "bird_nm": "Burung Kipasan Pasifik",
+        "description": "Burung kecil dengan ekor yang bisa dikipaskan untuk menarik perhatian. Sering aktif di kanopi hutan dan memiliki suara vokal yang bervariasi.",
+        "habitat": "Hutan tropis dan semak belukar di Papua Nugini dan sekitarnya.",
+        "family": "Monarchidae"
+    },
+    {
+        "id": 4,
+        "scientific_nm": "Aviceda subcristata",
+        "bird_nm": "Elang Baza Pasifik",
+        "description": "Burung pemangsa dengan paruh bengkok dan pola sayap mencolok. Sering berburu serangga dan kecil hewan dari udara.",
+        "habitat": "Hutan tropis dan hutan mangrove di Australia dan Indonesia.",
+        "family": "Accipitridae"
+    },
+    {
+        "id": 5,
         "scientific_nm": "Cacatua galerita",
         "bird_nm": "Kakatua Jambul Kuning",
         "description": "Kakatua besar dengan jambul kuning cerah di kepala. Burung ini terkenal dengan kecerdasannya dan kemampuannya meniru suara manusia.",
@@ -24,15 +40,87 @@
         "family": "Cacatuidae"
     },
     {
-        "id": 4,
+        "id": 6,
+        "scientific_nm": "Cicinnurus regius",
+        "bird_nm": "Burung Cendrawasih Raja",
+        "description": "Burung jantan dengan bulu ekor panjang dan warna mencolok untuk memikat betina. Dikenal dengan tarian kawin yang indah.",
+        "habitat": "Hutan hujan tropis di Papua Nugini.",
+        "family": "Paradisaeidae"
+    },
+    {
+        "id": 7,
+        "scientific_nm": "Colluricincla megarhyncha",
+        "bird_nm": "Burung Shrike Kecil",
+        "description": "Burung dengan paruh besar dan suara kicauan yang kuat. Sering mencari makanan di tanah atau semak belukar.",
+        "habitat": "Hutan tropis dan hutan pegunungan di Indonesia dan Papua.",
+        "family": "Pachycephalidae"
+    },
+    {
+        "id": 8,
+        "scientific_nm": "Corvus tristis",
+        "bird_nm": "Gagak Hitam Australia",
+        "description": "Burung cerdas dengan bulu hitam mengkilap dan suara yang bervariasi. Sering terlihat dalam kelompok dan beradaptasi dengan lingkungan manusia.",
+        "habitat": "Daerah terbuka, hutan, dan perkotaan di Australia.",
+        "family": "Corvidae"
+    },
+    {
+        "id": 9,
+        "scientific_nm": "Cracticus cassicus",
+        "bird_nm": "Burung Butcherbird Hitam",
+        "description": "Burung dengan paruh tajam dan pola hitam-putih mencolok. Dikenal karena menyimpan mangsa di tempat tersembunyi.",
+        "habitat": "Hutan terbuka dan semak belukar di Australia dan Papua.",
+        "family": "Artamidae"
+    },
+    {
+        "id": 10,
+        "scientific_nm": "Dacelo gaudichaud",
+        "bird_nm": "Burung Cekakak Biru",
+        "description": "Burung dengan tawa khas dan warna biru cerah. Sering hidup dalam kelompok dan memangsa serangga serta kecil hewan.",
+        "habitat": "Hutan tropis di Papua dan Indonesia.",
+        "family": "Alcedinidae"
+    },
+    {
+        "id": 11,
+        "scientific_nm": "Dicaeum trochileum",
+        "bird_nm": "Burung Madu Kecil",
+        "description": "Burung kecil dengan paruh melengkung untuk menghisap nektar. Memiliki bulu hijau dan sering terbang cepat di antara bunga.",
+        "habitat": "Hutan tropis dan kebun di Asia Tenggara.",
+        "family": "Dicaeidae"
+    },
+    {
+        "id": 12,
+        "scientific_nm": "Ducula pinon",
+        "bird_nm": "Merpati Pinon",
+        "description": "Merpati besar dengan bulu keabu-abuan dan paruh kuat. Sering terbang dalam kelompok di kanopi hutan.",
+        "habitat": "Hutan hujan tropis di Papua dan Indonesia.",
+        "family": "Columbidae"
+    },
+    {
+        "id": 13,
+        "scientific_nm": "Ducula rufigaster",
+        "bird_nm": "Merpati Perut Merah",
+        "description": "Merpati dengan bulu perut berwarna merah dan tubuh besar. Dikenal sebagai pemakan buah dan sering terbang jauh.",
+        "habitat": "Hutan tropis di Papua Nugini.",
+        "family": "Columbidae"
+    },
+    {
+        "id": 14,
+        "scientific_nm": "Ducula zoeae",
+        "bird_nm": "Merpati Zoea",
+        "description": "Merpati dengan bulu hitam mengkilap dan ukuran sedang. Sering ditemukan di hutan basah dan memakan buah-buahan.",
+        "habitat": "Hutan hujan di Papua dan Kepulauan Solomon.",
+        "family": "Columbidae"
+    },
+    {
+        "id": 15,
         "scientific_nm": "Eclectus roratus",
-        "bird_nm": "Eclectus Parrot",
+        "bird_nm": "Beo Eclectus",
         "description": "Burung beo dengan warna mencolok, jantan berwarna hijau dan betina berwarna merah. Salah satu burung paruh bengkok yang sangat menarik.",
         "habitat": "Hutan tropis di Papua Nugini dan Kepulauan Solomon.",
         "family": "Psittacidae"
     },
     {
-        "id": 5,
+        "id": 16,
         "scientific_nm": "Geoffroyus geoffroyi",
         "bird_nm": "Kakatua Sumba",
         "description": "Burung dengan warna bulu yang cerah dan jambul yang menawan. Cenderung hidup di daerah pegunungan dan hutan tropis.",
@@ -40,7 +128,7 @@
         "family": "Cacatuidae"
     },
     {
-        "id": 6,
+        "id": 17,
         "scientific_nm": "Geopelia striata",
         "bird_nm": "Merpati Garis-Garis",
         "description": "Merpati kecil dengan garis-garis abu-abu di tubuhnya. Sering dijumpai di daerah perkotaan dan pekarangan.",
@@ -48,7 +136,55 @@
         "family": "Columbidae"
     },
     {
-        "id": 7,
+        "id": 18,
+        "scientific_nm": "Haliastur indus",
+        "bird_nm": "Elang Brahminy",
+        "description": "Burung pemangsa dengan bulu coklat kemerahan dan kepala putih. Sering terbang di atas air untuk berburu ikan.",
+        "habitat": "Pantai, sungai, dan hutan mangrove di Asia Tenggara.",
+        "family": "Accipitridae"
+    },
+    {
+        "id": 19,
+        "scientific_nm": "Leptocoma aspasia",
+        "bird_nm": "Burung Madu Aspasia",
+        "description": "Burung kecil dengan bulu mengkilap dan paruh panjang untuk menghisap nektar. Memiliki suara kicauan yang lembut.",
+        "habitat": "Hutan tropis dan kebun di Asia Tenggara.",
+        "family": "Nectariniidae"
+    },
+    {
+        "id": 20,
+        "scientific_nm": "Lonchura leucogastroides",
+        "bird_nm": "Gereja Perut Putih",
+        "description": "Burung kecil dengan bulu coklat dan perut putih. Sering hidup dalam kelompok dan beradaptasi dengan lingkungan pertanian.",
+        "habitat": "Daerah terbuka dan sawah di Asia Tenggara.",
+        "family": "Estrildidae"
+    },
+    {
+        "id": 21,
+        "scientific_nm": "Lorius lory",
+        "bird_nm": "Beo Lory",
+        "description": "Burung paruh bengkok dengan bulu merah cerah dan kemampuan meniru suara. Sering aktif di kanopi hutan.",
+        "habitat": "Hutan tropis di Indonesia dan Papua.",
+        "family": "Psittacidae"
+    },
+    {
+        "id": 22,
+        "scientific_nm": "Malurus cyanocephalus",
+        "bird_nm": "Burung Emas Kepala Biru",
+        "description": "Burung kecil dengan kepala biru dan ekor panjang. Dikenal dengan perilaku sosial dan suara kicauan yang hidup.",
+        "habitat": "Hutan dan semak belukar di Australia dan Papua.",
+        "family": "Maluridae"
+    },
+    {
+        "id": 23,
+        "scientific_nm": "Manucodia ater",
+        "bird_nm": "Burung Cendrawasih Hitam",
+        "description": "Burung dengan bulu hitam mengkilap dan tarian kawin yang unik. Jantan sering menampilkan bulu untuk memikat betina.",
+        "habitat": "Hutan hujan tropis di Papua.",
+        "family": "Paradisaeidae"
+    },
+    {
+        "id": 24,
         "scientific_nm": "Orthotomus sutorius",
         "bird_nm": "Burung Penjahit",
         "description": "Burung kecil yang terkenal karena kemampuan membuat sarang berbentuk kantong yang unik.",
@@ -56,7 +192,103 @@
         "family": "Cisticolidae"
     },
     {
-        "id": 8,
+        "id": 25,
+        "scientific_nm": "Paradisaea apoda",
+        "bird_nm": "Burung Cendrawasih Besar",
+        "description": "Burung jantan dengan bulu ekor panjang dan warna mencolok. Terkenal dengan tarian kawin yang spektakuler.",
+        "habitat": "Hutan hujan di Papua Nugini.",
+        "family": "Paradisaeidae"
+    },
+    {
+        "id": 26,
+        "scientific_nm": "Paradisaea minor",
+        "bird_nm": "Burung Cendrawasih Kecil",
+        "description": "Burung dengan bulu indah dan perilaku kawin yang menarik. Sering ditemukan di kanopi hutan.",
+        "habitat": "Hutan tropis di Papua.",
+        "family": "Paradisaeidae"
+    },
+    {
+        "id": 27,
+        "scientific_nm": "Passer montanus",
+        "bird_nm": "Burung Pipit Gunung",
+        "description": "Burung kecil dengan bulu coklat dan suara kicauan yang ramai. Sering beradaptasi dengan lingkungan perkotaan.",
+        "habitat": "Daerah terbuka dan perkampungan di Asia.",
+        "family": "Passeridae"
+    },
+    {
+        "id": 28,
+        "scientific_nm": "Philemon buceroides",
+        "bird_nm": "Burung Madu Paruh Besar",
+        "description": "Burung dengan paruh panjang dan suara vokal yang keras. Sering mencari nektar dan serangga di hutan.",
+        "habitat": "Hutan tropis di Australia dan Papua.",
+        "family": "Meliphagidae"
+    },
+    {
+        "id": 29,
+        "scientific_nm": "Philemon meyeri",
+        "bird_nm": "Burung Madu Meyer",
+        "description": "Burung dengan bulu hitam dan paruh melengkung. Dikenal sebagai pemakan nektar dan buah-buahan.",
+        "habitat": "Hutan tropis di Indonesia.",
+        "family": "Meliphagidae"
+    },
+    {
+        "id": 30,
+        "scientific_nm": "Poecilodryas hypoleuca",
+        "bird_nm": "Burung Flycatcher Putih",
+        "description": "Burung kecil dengan bulu putih di bagian bawah. Sering berburu serangga dari cabang pohon.",
+        "habitat": "Hutan tropis di Papua.",
+        "family": "Petroicidae"
+    },
+    {
+        "id": 31,
+        "scientific_nm": "Prinia familiaris",
+        "bird_nm": "Burung Prinia Biasa",
+        "description": "Burung kecil dengan suara kicauan yang bervariasi. Sering terlihat di semak belukar dan daerah terbuka.",
+        "habitat": "Hutan dan perkampungan di Asia Tenggara.",
+        "family": "Cisticolidae"
+    },
+    {
+        "id": 32,
+        "scientific_nm": "Probosciger aterrimus",
+        "bird_nm": "Kakatua Hitam Besar",
+        "description": "Kakatua dengan paruh besar dan bulu hitam. Terkenal dengan suara yang keras dan kecerdasannya.",
+        "habitat": "Hutan tropis di Papua Nugini.",
+        "family": "Cacatuidae"
+    },
+    {
+        "id": 33,
+        "scientific_nm": "Pseudorectes ferrugineus",
+        "bird_nm": "Burung Fantail Merah",
+        "description": "Burung dengan ekor yang bisa dikipaskan dan bulu berwarna coklat kemerahan. Sering aktif di hutan bawah.",
+        "habitat": "Hutan tropis di Papua.",
+        "family": "Monarchidae"
+    },
+    {
+        "id": 34,
+        "scientific_nm": "Ptilinopus iozonus",
+        "bird_nm": "Burung Dara Hijau",
+        "description": "Burung dengan bulu hijau cerah dan paruh pendek. Sering memakan buah-buahan di kanopi hutan.",
+        "habitat": "Hutan tropis di Indonesia.",
+        "family": "Columbidae"
+    },
+    {
+        "id": 35,
+        "scientific_nm": "Ptilinopus pulchellus",
+        "bird_nm": "Burung Dara Cantik",
+        "description": "Burung dengan warna bulu mencolok dan ukuran kecil. Dikenal sebagai pemakan buah dan sering terbang cepat.",
+        "habitat": "Hutan hujan di Papua.",
+        "family": "Columbidae"
+    },
+    {
+        "id": 36,
+        "scientific_nm": "Ptiloris magnificus",
+        "bird_nm": "Burung Cendrawasih Magnificus",
+        "description": "Burung jantan dengan bulu hijau mengkilap dan tarian kawin yang megah. Salah satu burung paling indah di hutan.",
+        "habitat": "Hutan tropis di Papua.",
+        "family": "Paradisaeidae"
+    },
+  {
+        "id": 38,
         "scientific_nm": "Pycnonotus aurigaster",
         "bird_nm": "Bulbul Emas",
         "description": "Burung dengan bulu berwarna coklat keemasan dan suara kicauan yang indah. Sering ditemui di daerah terbuka.",
@@ -64,7 +296,15 @@
         "family": "Pycnonotidae"
     },
     {
-        "id": 9,
+        "id": 39,
+        "scientific_nm": "Rhipidura threnothorax",
+        "bird_nm": "Burung Kipasan Duka",
+        "description": "Burung kecil dengan ekor yang bisa dikipaskan dan bulu hitam-putih mencolok. Sering aktif di hutan bawah dan memiliki suara vokal yang melankolis.",
+        "habitat": "Hutan tropis dan semak belukar di Papua Nugini.",
+        "family": "Rhipiduridae"
+    },
+    {
+        "id": 40,
         "scientific_nm": "Rhyticeros plicatus",
         "bird_nm": "Hornbill Berkerut",
         "description": "Burung dengan paruh besar yang melengkung dan kulit wajah yang berkerut. Merupakan simbol kebudayaan di beberapa negara Asia.",
@@ -72,7 +312,15 @@
         "family": "Bucerotidae"
     },
     {
-        "id": 10,
+        "id": 41,
+        "scientific_nm": "Talegalla jobiensis",
+        "bird_nm": "Burung Ayam Hutan Jobi",
+        "description": "Burung besar dengan bulu hitam dan perilaku tanah, sering membuat sarang di tanah untuk bertelur. Dikenal sebagai burung endemik yang pemalu.",
+        "habitat": "Hutan hujan tropis di Papua dan Kepulauan Jobi.",
+        "family": "Megapodiidae"
+    },
+    {
+        "id": 42,
         "scientific_nm": "Tanysiptera galatea",
         "bird_nm": "Burung Cendrawasih Rangkaian",
         "description": "Burung dengan bulu ekor yang sangat panjang dan indah. Dikenal sebagai salah satu burung paling menakjubkan di dunia.",

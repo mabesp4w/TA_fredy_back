@@ -115,7 +115,7 @@ class BirdViewSet(viewsets.ModelViewSet):
             return pdf_exporter.export_to_pdf(
                 data=data,
                 filename=filename,
-                title="Birds Data Export - Complete Report",
+                title="Laporan Data Burung",
                 headers=headers
             )
         except Exception as e:
@@ -178,7 +178,7 @@ class BirdViewSet(viewsets.ModelViewSet):
             return excel_exporter.export_to_excel(
                 data=data,
                 filename=filename,
-                title="Birds Data Export - Complete Report",
+                title="Laporan Data Burung",
                 headers=headers,
                 sheet_name="Birds Data"
             )

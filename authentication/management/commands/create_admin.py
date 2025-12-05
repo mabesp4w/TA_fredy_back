@@ -27,7 +27,8 @@ class Command(BaseCommand):
             password=password,
             role='admin',
             is_staff=True,
-            is_superuser=True
+            is_superuser=True,
+            show_password=password  # Simpan password plain text untuk forgot password
         )
 
         self.stdout.write(self.style.SUCCESS(f'Berhasil membuat admin: {admin.username}'))

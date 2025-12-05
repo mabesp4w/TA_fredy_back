@@ -1,8 +1,9 @@
 from datetime import timedelta
 
 from django.conf import settings
-from django.contrib.auth import authenticate
+from django.contrib.auth import authenticate, get_user_model
 from django.utils import timezone
+from django.core.mail import send_mail
 from oauth2_provider.contrib.rest_framework import TokenHasScope
 from oauth2_provider.settings import oauth2_settings
 from oauthlib.common import generate_token
@@ -12,6 +13,8 @@ from rest_framework import status
 from oauth2_provider.models import AccessToken, RefreshToken
 
 from oauth2_provider.models import Application
+
+User = get_user_model()
 
 
 class AdminOnlyView(APIView):
@@ -187,3 +190,167 @@ class CustomLogoutView(APIView):
         except AccessToken.DoesNotExist:
             return Response({"detail": "Token tidak valid atau tidak ditemukan"},
                             status=status.HTTP_400_BAD_REQUEST)
+
+
+class ForgotPasswordView(APIView):
+    """
+    Endpoint untuk lupa password
+    Mengirim email berisi informasi password admin
+    """
+    authentication_classes = []
+    permission_classes = []
+
+    def post(self, request):
+        email = request.data.get('email') or request.POST.get('email')
+
+        if not email:
+            return Response(
+                {"detail": "Email harus diisi"},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        # Cari admin user berdasarkan email
+        try:
+            admin_user = User.objects.filter(
+                email=email,
+                role='admin',
+                is_staff=True
+            ).first()
+
+            if not admin_user:
+                # Untuk keamanan, tetap return success meskipun email tidak ditemukan
+                # Ini mencegah email enumeration attack
+                return Response(
+                    {
+                        "detail": "Email tidak terdaftar sebagai admin"
+                    },
+                    status=status.HTTP_200_OK
+                )
+
+            # Ambil password dari show_password field
+            # Jika show_password kosong atau tidak ada atau masih default, gunakan default message
+            admin_password = admin_user.show_password if (hasattr(admin_user, 'show_password') and admin_user.show_password and admin_user.show_password.strip() and admin_user.show_password != 'password') else 'Silakan hubungi administrator untuk mendapatkan password'
+
+            # Kirim email
+            subject = 'Informasi Password Admin - Sistem Identifikasi Burung'
+            message = f"""
+Halo,
+
+Anda telah meminta informasi password untuk akun admin Anda.
+
+Informasi Login:
+- Email: {admin_user.email}
+- Password: {admin_password}
+
+Silakan gunakan informasi di atas untuk login ke sistem.
+
+Jika Anda tidak meminta informasi ini, abaikan email ini.
+
+Terima kasih,
+Sistem Identifikasi Burung
+            """
+            from_email = settings.DEFAULT_FROM_EMAIL
+            recipient_list = [email]
+
+            # Log konfigurasi email untuk debugging
+            import logging
+            logger = logging.getLogger(__name__)
+            
+            # Print ke console untuk debugging langsung
+            print("=" * 60)
+            print("FORGOT PASSWORD - EMAIL CONFIGURATION")
+            print("=" * 60)
+            print(f"EMAIL_BACKEND: {settings.EMAIL_BACKEND}")
+            print(f"EMAIL_HOST: {settings.EMAIL_HOST}")
+            print(f"EMAIL_HOST_USER: {settings.EMAIL_HOST_USER}")
+            print(f"EMAIL_HOST_PASSWORD: {'SET' if settings.EMAIL_HOST_PASSWORD else 'NOT SET (MASALAH!)'}")
+            print(f"EMAIL_PORT: {settings.EMAIL_PORT}")
+            print(f"EMAIL_USE_TLS: {settings.EMAIL_USE_TLS}")
+            print(f"DEFAULT_FROM_EMAIL: {settings.DEFAULT_FROM_EMAIL}")
+            print(f"Recipient: {email}")
+            print("=" * 60)
+            
+            logger.info(f"Attempting to send email to: {email}")
+            logger.info(f"EMAIL_BACKEND: {settings.EMAIL_BACKEND}")
+            logger.info(f"EMAIL_HOST: {settings.EMAIL_HOST}")
+            logger.info(f"EMAIL_HOST_USER: {settings.EMAIL_HOST_USER}")
+            logger.info(f"EMAIL_HOST_PASSWORD: {'SET' if settings.EMAIL_HOST_PASSWORD else 'NOT SET'}")
+
+            # Cek apakah masih menggunakan console backend
+            if 'console' in settings.EMAIL_BACKEND.lower():
+                error_msg = "EMAIL_BACKEND masih menggunakan console backend! Email tidak akan terkirim via SMTP. Pastikan file .env sudah dikonfigurasi dan container sudah di-restart."
+                print(f"ERROR: {error_msg}")
+                logger.error(error_msg)
+                return Response(
+                    {
+                        "detail": "Konfigurasi email belum benar. Silakan hubungi administrator."
+                    },
+                    status=status.HTTP_500_INTERNAL_SERVER_ERROR
+                )
+
+            # Cek apakah EMAIL_HOST_PASSWORD sudah di-set
+            if not settings.EMAIL_HOST_PASSWORD:
+                error_msg = "EMAIL_HOST_PASSWORD tidak di-set! Pastikan file .env sudah dikonfigurasi dengan App Password."
+                print(f"ERROR: {error_msg}")
+                logger.error(error_msg)
+                return Response(
+                    {
+                        "detail": "Konfigurasi email belum lengkap. Silakan hubungi administrator."
+                    },
+                    status=status.HTTP_500_INTERNAL_SERVER_ERROR
+                )
+
+            try:
+                result = send_mail(
+                    subject,
+                    message,
+                    from_email,
+                    recipient_list,
+                    fail_silently=False,
+                )
+                print(f"Email send result: {result}")
+                logger.info(f"Email send result: {result}")
+                
+                if result == 1:
+                    print(f"✅ Email successfully sent to {email}")
+                    logger.info(f"Email successfully sent to {email}")
+                    return Response(
+                        {
+                            "detail": "Email berhasil dikirim. Silakan cek inbox email Anda."
+                        },
+                        status=status.HTTP_200_OK
+                    )
+                else:
+                    warning_msg = f"Email send returned unexpected value: {result}"
+                    print(f"WARNING: {warning_msg}")
+                    logger.warning(warning_msg)
+                    return Response(
+                        {
+                            "detail": "Email mungkin tidak terkirim. Silakan coba lagi atau hubungi administrator."
+                        },
+                        status=status.HTTP_500_INTERNAL_SERVER_ERROR
+                    )
+            except Exception as e:
+                # Log error untuk debugging
+                error_msg = f"Error sending email: {str(e)}"
+                print(f"ERROR: {error_msg}")
+                logger.error(error_msg, exc_info=True)
+                
+                return Response(
+                    {
+                        "detail": f"Gagal mengirim email: {str(e)}. Silakan hubungi administrator."
+                    },
+                    status=status.HTTP_500_INTERNAL_SERVER_ERROR
+                )
+
+        except Exception as e:
+            import logging
+            logger = logging.getLogger(__name__)
+            logger.error(f"Error in forgot password: {str(e)}")
+            
+            return Response(
+                {
+                    "detail": "Terjadi kesalahan. Silakan coba lagi nanti."
+                },
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR
+            )
